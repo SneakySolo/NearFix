@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Request Detail - NearFix</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f6f8; color: #333; }
+        .page-container { max-width: 700px; margin: 40px auto; padding: 0 1rem; }
+        .card { background: white; border-radius: 10px; padding: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.07); margin-bottom: 1.5rem; }
+        h2 { color: #1a1a2e; margin-bottom: 0.5rem; }
+        .desc { color: #555; font-size: 0.95rem; margin-bottom: 0.5rem; }
+        .date { font-size: 0.8rem; color: #aaa; }
+        .media-list { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1rem; }
+        .media-list img { width: 100px; height: 100px; object-fit: cover; border-radius: 6px; border: 1px solid #eee; }
+        h3 { color: #1a1a2e; margin-bottom: 1rem; }
+        .form-group { display: flex; flex-direction: column; gap: 5px; margin-bottom: 1rem; }
+        .form-group label { font-weight: 600; font-size: 0.9rem; }
+        .form-group input, .form-group textarea { padding: 0.6rem 0.8rem; border: 1px solid #ccc; border-radius: 6px; font-size: 1rem; font-family: inherit; }
+        textarea { resize: vertical; }
+        .btn-primary { width: 100%; padding: 0.75rem; background: #4f46e5; color: white; border: none; border-radius: 6px; font-size: 1rem; cursor: pointer; }
+        .btn-primary:hover { background: #4338ca; }
+        .already-bid { background: #dcfce7; color: #166534; padding: 1rem; border-radius: 8px; font-weight: 600; text-align: center; }
+        .error-msg { background: #fee2e2; color: #b91c1c; padding: 0.6rem; border-radius: 6px; margin-bottom: 1rem; font-size: 0.9rem; }
+        .back-link { display: block; margin-top: 1rem; color: #4f46e5; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+<div class="page-container">
+
+    <!-- Request info -->
+    <div class="card">
+        <h2 th:text="${request.title}"></h2>
+        <p class="desc" th:text="${request.description}"></p>
+        <span class="date" th:text="${#temporals.format(request.createdAt, 'dd MMM yyyy, HH:mm')}"></span>
+
+        <!-- Media files -->
+        <div class="media-list" th:if="${!#lists.isEmpty(request.requestMedia)}">
+            <img th:each="media : ${request.requestMedia}"
+                 th:src="@{'/uploads/' + ${media.filePath}}"
+                 alt="Repair media"/>
+        </div>
+    </div>
+
+    <!-- Bid form or already bid message -->
+    <div class="card">
+        <div th:if="${alreadyBid}" class="already-bid">
+            ✅ You have already placed a bid on this request.
+        </div>
+
+        <div th:if="${!alreadyBid}">
+            <h3>Place Your Bid</h3>
+
+            <div th:if="${param.error}" class="error-msg" th:text="${param.error}"></div>
+
+            <form th:action="@{/provider/request/{id}/bid(id=${request.id})}" method="post">
+
+                <div class="form-group">
+                    <label>Your Price (₹)</label>
+                    <input type="number" name="price" step="0.01" placeholder="e.g. 500"/>
+                </div>
+
+                <div class="form-group">
+                    <label>Estimated Hours</label>
+                    <input type="number" name="estimatedHour" placeholder="e.g. 2"/>
+                </div>
+
+                <div class="form-group">
+                    <label>Message (optional)</label>
+                    <textarea name="message" rows="3" placeholder="Any notes for the customer..."></textarea>
+                </div>
+
+                <button type="submit" class="btn-primary">Submit Bid</button>
+            </form>
+        </div>
+    </div>
+
+    <a class="back-link" th:href="@{/provider/dashboard}">← Back to Dashboard</a>
+</div>
+
+</body>
+</html>

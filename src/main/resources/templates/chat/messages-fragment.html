@@ -1,0 +1,17 @@
+<th:block xmlns:th="http://www.thymeleaf.org">
+
+    <div th:if="${#lists.isEmpty(messages)}"
+         style="text-align:center; color:#bbb; margin:auto; font-size:0.9rem;">
+        No messages yet. Say something!
+    </div>
+
+    <div th:each="msg : ${messages}"
+         class="message-row"
+         th:classappend="${msg.sender.id == userId} ? 'mine' : 'theirs'">
+        <div class="bubble" th:text="${msg.message}"></div>
+        <span class="msg-meta"
+              th:text="${msg.sender.fullname} + ' · ' + ${#temporals.format(msg.sentAt, 'HH:mm')}">
+        </span>
+    </div>
+
+</th:block>

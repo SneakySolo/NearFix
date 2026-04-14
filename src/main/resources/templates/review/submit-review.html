@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Leave a Review - NearFix</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f6f8; color: #333; }
+
+        .page-container { max-width: 560px; margin: 50px auto; padding: 0 1rem; }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+
+        h2 { color: #1a1a2e; margin-bottom: 0.4rem; }
+        .request-title { color: #6b7280; font-size: 0.9rem; margin-bottom: 1.5rem; }
+
+        .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 1.2rem; }
+        .form-group label { font-weight: 600; font-size: 0.9rem; }
+
+        .star-group { display: flex; gap: 0.5rem; flex-direction: row-reverse; justify-content: flex-end; }
+
+        .star-group input[type="radio"] { display: none; }
+
+        .star-group label {
+            font-size: 2rem;
+            color: #d1d5db;
+            cursor: pointer;
+            transition: color 0.1s;
+        }
+
+        .star-group input[type="radio"]:checked ~ label,
+        .star-group label:hover,
+        .star-group label:hover ~ label {
+            color: #f59e0b;
+        }
+
+        textarea {
+            padding: 0.65rem 0.9rem;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            resize: vertical;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 0.75rem;
+            background: #4f46e5;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+        .btn-primary:hover { background: #4338ca; }
+
+        .existing-review {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+        }
+        .existing-review .stars { font-size: 1.5rem; margin-bottom: 0.4rem; }
+        .existing-review .comment { color: #555; font-size: 0.92rem; }
+        .existing-review .date { font-size: 0.78rem; color: #aaa; margin-top: 0.4rem; }
+
+        .success-msg {
+            background: #dcfce7;
+            color: #166534;
+            padding: 0.7rem 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .back-link { display: block; margin-top: 1rem; color: #4f46e5; font-size: 0.9rem; text-align: center; }
+    </style>
+</head>
+<body>
+
+<div class="page-container">
+    <div class="card">
+        <h2>Leave a Review</h2>
+        <div class="request-title" th:text="'For: ' + ${request.title}"></div>
+
+        <!-- Already reviewed -->
+        <div th:if="${existingReview != null}">
+            <div class="success-msg">You have already reviewed this job.</div>
+            <div class="existing-review">
+                <div class="stars">
+                    <!-- Show filled stars based on rating -->
+                    <span th:each="i : ${#numbers.sequence(1, existingReview.stars)}">⭐</span>
+                </div>
+                <div class="comment"
+                     th:if="${existingReview.comment != null}"
+                     th:text="${existingReview.comment}">
+                </div>
+                <div class="date"
+                     th:text="${#temporals.format(existingReview.createdAt, 'dd MMM yyyy')}">
+                </div>
+            </div>
+        </div>
+
+        <!-- Review form — only if not yet reviewed -->
+        <div th:if="${existingReview == null}">
+            <form th:action="@{/review/{id}/submit(id=${request.id})}" method="post">
+
+                <div class="form-group">
+                    <label>Your Rating</label>
+                    <!-- Star radio buttons — reversed so CSS hover trick works -->
+                    <div class="star-group">
+                        <input type="radio" name="stars" id="s5" value="5"/>
+                        <label for="s5">★</label>
+                        <input type="radio" name="stars" id="s4" value="4"/>
+                        <label for="s4">★</label>
+                        <input type="radio" name="stars" id="s3" value="3"/>
+                        <label for="s3">★</label>
+                        <input type="radio" name="stars" id="s2" value="2"/>
+                        <label for="s2">★</label>
+                        <input type="radio" name="stars" id="s1" value="1"/>
+                        <label for="s1">★</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Comment (optional)</label>
+                    <textarea name="comment" rows="4" placeholder="How was the service?"></textarea>
+                </div>
+
+                <button type="submit" class="btn-primary">Submit Review</button>
+            </form>
+        </div>
+
+        <a class="back-link" th:href="@{/customer/request/{id}(id=${request.id})}">← Back to Request</a>
+    </div>
+</div>
+
+</body>
+</html>

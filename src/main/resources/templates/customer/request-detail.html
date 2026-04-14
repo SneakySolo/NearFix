@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Request Detail - NearFix</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f6f8; color: #333; }
+
+        .page-container { max-width: 800px; margin: 40px auto; padding: 0 1rem; }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+            margin-bottom: 1.5rem;
+        }
+
+        .card h2 { color: #1a1a2e; margin-bottom: 0.5rem; }
+        .card h3 { color: #1a1a2e; margin-bottom: 1rem; }
+
+        .desc { color: #555; font-size: 0.95rem; line-height: 1.5; margin-bottom: 0.75rem; }
+        .meta { font-size: 0.82rem; color: #aaa; }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        .status-PENDING   { background: #fef9c3; color: #854d0e; }
+        .status-ACCEPTED  { background: #dbeafe; color: #1e40af; }
+        .status-DONE      { background: #dcfce7; color: #166534; }
+        .status-DESTROYED { background: #fee2e2; color: #991b1b; }
+
+        .media-list { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1rem; }
+        .media-list img {
+            width: 110px;
+            height: 110px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #eee;
+        }
+
+        .bid-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .bid-info { flex: 1; }
+        .bid-shop { font-weight: 600; font-size: 0.95rem; margin-bottom: 0.3rem; }
+        .bid-rating { font-size: 0.83rem; color: #777; margin-bottom: 0.3rem; }
+        .bid-price { color: #4f46e5; font-weight: 700; font-size: 1.1rem; margin-bottom: 0.2rem; }
+        .bid-hours { font-size: 0.85rem; color: #777; margin-bottom: 0.3rem; }
+        .bid-message { font-size: 0.88rem; color: #555; }
+
+        .bid-status-badge {
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .bid-PENDING  { background: #fef9c3; color: #854d0e; }
+        .bid-ACCEPTED { background: #dcfce7; color: #166534; }
+        .bid-REJECTED { background: #fee2e2; color: #991b1b; }
+
+        .btn-accept {
+            padding: 0.5rem 1.1rem;
+            background: #4f46e5;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.88rem;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .btn-accept:hover { background: #4338ca; }
+
+        .empty-bids {
+            text-align: center;
+            color: #aaa;
+            padding: 2rem 0;
+            font-size: 0.9rem;
+        }
+
+        .info-msg {
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 0.7rem 1rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .error-msg {
+            background: #fee2e2;
+            color: #b91c1c;
+            padding: 0.7rem 1rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .back-link { color: #4f46e5; font-size: 0.9rem; text-decoration: none; }
+        .back-link:hover { text-decoration: underline; }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.2rem;
+        }
+
+        .btn-chat {
+            display: inline-block;
+            padding: 0.6rem 1.2rem;
+            background: #059669;
+            color: white;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        .btn-chat:hover { background: #047857; }
+
+        .btn-done {
+            padding: 0.6rem 1.2rem;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+        .btn-done:hover { background: #1d4ed8; }
+
+        .btn-review {
+            display: inline-block;
+            padding: 0.6rem 1.2rem;
+            background: #d97706;
+            color: white;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        .btn-review:hover { background: #b45309; }
+    </style>
+</head>
+<body>
+
+<div class="page-container">
+
+    <!-- Request Info Card -->
+    <div class="card">
+        <h2 th:text="${request.title}"></h2>
+        <span class="status-badge"
+              th:classappend="'status-' + ${request.status}"
+              th:text="${request.status}">
+        </span>
+        <p class="desc" th:text="${request.description}"></p>
+        <span class="meta" th:text="${#temporals.format(request.createdAt, 'dd MMM yyyy, HH:mm')}"></span>
+
+        <!-- Media -->
+        <div class="media-list" th:if="${!#lists.isEmpty(request.requestMedia)}">
+            <img th:each="media : ${request.requestMedia}"
+                 th:src="@{'/uploads/' + ${media.filePath}}"
+                 alt="Repair media"/>
+        </div>
+    </div>
+
+    <!-- Bids Card -->
+    <div class="card">
+        <h3>Bids Received</h3>
+
+        <div th:if="${param.error}" class="error-msg" th:text="${param.error}"></div>
+
+        <!-- Request no longer pending -->
+        <div th:if="${request.status.name() != 'PENDING'}" class="info-msg">
+            This request is no longer accepting bids.
+        </div>
+
+        <!-- No bids yet -->
+        <div th:if="${#lists.isEmpty(bids)}" class="empty-bids">
+            No bids have been placed yet.
+        </div>
+
+        <!-- Bid list — ONLY bid info and accept button inside this loop -->
+        <div th:each="bid : ${bids}" class="bid-card">
+            <div class="bid-info">
+                <div class="bid-shop" th:text="${bid.repairShop.shopName}"></div>
+                <div class="bid-rating">
+                    ⭐ <span th:text="${ratings[bid.repairShop.id] != null and ratings[bid.repairShop.id] > 0}
+                                       ? ${#numbers.formatDecimal(ratings[bid.repairShop.id], 1, 1)} + ' / 5'
+                                       : 'No ratings yet'">
+                    </span>
+                </div>
+                <div class="bid-price" th:text="'₹' + ${bid.price}"></div>
+                <div class="bid-hours" th:text="${bid.estimatedHour} + ' hour(s) estimated'"></div>
+                <div class="bid-message"
+                     th:if="${bid.message != null and !bid.message.isEmpty()}"
+                     th:text="${bid.message}">
+                </div>
+                <span class="bid-status-badge"
+                      th:classappend="'bid-' + ${bid.status}"
+                      th:text="${bid.status}">
+                </span>
+            </div>
+
+            <!-- Accept button — only show if request is PENDING -->
+            <form th:if="${request.status.name() == 'PENDING'}"
+                  th:action="@{/customer/request/{rId}/bid/{bId}/accept(rId=${request.id}, bId=${bid.id})}"
+                  method="post">
+                <button type="submit" class="btn-accept">Accept</button>
+            </form>
+        </div>
+        <!-- END bid loop -->
+
+    </div>
+    <!-- END bids card -->
+
+    <!-- Action buttons — completely outside the card and the loop -->
+    <div class="action-buttons">
+
+        <a th:if="${request.status.name() == 'ACCEPTED'}"
+           th:href="@{/chat/{id}(id=${request.id})}"
+           class="btn-chat">💬 Open Chat</a>
+
+        <form th:if="${request.status.name() == 'ACCEPTED'}"
+              th:action="@{/customer/request/{id}/done(id=${request.id})}"
+              method="post">
+            <button type="submit" class="btn-done">✅ Mark as Done</button>
+        </form>
+
+        <a th:if="${request.status.name() == 'DONE'}"
+           th:href="@{/review/{id}(id=${request.id})}"
+           class="btn-review">⭐ Leave a Review</a>
+
+    </div>
+
+    <a class="back-link" th:href="@{/customer/dashboard}">← Back to Dashboard</a>
+
+</div>
+
+</body>
+</html>

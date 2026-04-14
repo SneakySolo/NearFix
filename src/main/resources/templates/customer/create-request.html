@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>New Request - NearFix</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f6f8; color: #333; }
+
+        .page-container {
+            max-width: 640px;
+            margin: 50px auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+        }
+
+        h2 { margin-bottom: 1.5rem; color: #1a1a2e; }
+
+        .form-group { display: flex; flex-direction: column; gap: 5px; margin-bottom: 1.2rem; }
+        .form-group label { font-weight: 600; font-size: 0.9rem; }
+
+        .form-group input,
+        .form-group textarea {
+            padding: 0.65rem 0.9rem;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        textarea { resize: vertical; }
+
+        .btn-primary {
+            width: 100%;
+            padding: 0.75rem;
+            background: #4f46e5;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+        .btn-primary:hover { background: #4338ca; }
+
+        .error-msg {
+            background: #fee2e2;
+            color: #b91c1c;
+            padding: 0.6rem 0.9rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .back-link { display: block; margin-top: 1rem; text-align: center; color: #4f46e5; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+<div class="page-container">
+    <h2>Submit a Repair Request</h2>
+
+    <div th:if="${error}" class="error-msg" th:text="${error}"></div>
+
+    <form th:action="@{/customer/request/new}" method="post" enctype="multipart/form-data">
+
+        <div class="form-group">
+            <label>Title</label>
+            <input type="text" name="title" placeholder="e.g. Cracked phone screen"/>
+        </div>
+
+        <div class="form-group">
+            <label>Description</label>
+            <textarea name="description" rows="5" placeholder="Describe the issue..."></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Attach Photos / Videos (optional)</label>
+            <input type="file" name="mediaFiles" multiple accept="image/*,video/*"/>
+        </div>
+
+        <button type="submit" class="btn-primary">Submit Request</button>
+    </form>
+
+    <a class="back-link" th:href="@{/customer/dashboard}">← Back to Dashboard</a>
+</div>
+
+</body>
+</html>

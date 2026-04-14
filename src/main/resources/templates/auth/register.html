@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Register</title>
+
+    <style>
+
+        body{
+            font-family: Arial, sans-serif;
+            background:#f4f6f9;
+            height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+        }
+
+        .card{
+            width:420px;
+            background:white;
+            padding:30px;
+            border-radius:8px;
+            box-shadow:0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        h2{
+            text-align:center;
+            margin-bottom:20px;
+        }
+
+        input,select{
+            width:100%;
+            padding:10px;
+            margin-top:6px;
+            margin-bottom:15px;
+            border:1px solid #ccc;
+            border-radius:4px;
+        }
+
+        button{
+            width:100%;
+            padding:10px;
+            background:#16a34a;
+            border:none;
+            color:white;
+            border-radius:4px;
+            cursor:pointer;
+        }
+
+        button:hover{
+            background:#15803d;
+        }
+
+        .error{
+            color:red;
+            text-align:center;
+            margin-bottom:10px;
+        }
+
+        .link{
+            text-align:center;
+            margin-top:15px;
+        }
+
+        a{
+            text-decoration:none;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="card">
+
+    <h2>Create Account</h2>
+
+    <div class="error" th:if="${error}" th:text="${error}"></div>
+
+    <form th:action="@{/auth/register}" th:object="${registerDTO}" method="post">
+
+        <label>Full Name</label>
+        <input type="text" th:field="*{fullname}" placeholder="Enter full name">
+
+        <label>Email</label>
+        <input type="email" th:field="*{email}" placeholder="Enter email">
+
+        <label>Password</label>
+        <input type="password" th:field="*{password}" placeholder="Enter password">
+
+        <label>Phone</label>
+        <input type="text" th:field="*{phone}" placeholder="Enter phone number">
+
+        <label>Role</label>
+        <select th:field="*{role}">
+            <option value="">Select Role</option>
+            <option value="CUSTOMER">Customer</option>
+            <option value="SERVICE_PROVIDER">Service Provider</option>
+        </select>
+
+        <button type="submit">Register</button>
+
+    </form>
+
+    <div class="link">
+        <p>Already have an account? <a th:href="@{/auth/login}">Login</a></p>
+    </div>
+
+</div>
+
+</body>
+</html>
