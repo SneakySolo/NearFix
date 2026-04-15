@@ -54,4 +54,18 @@ public class UserService {
     public List<User> getAllByRole(Role role) {
         return userRepository.findByRole(role);
     }
+
+    public void toggleUserStatus(Integer userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("user not found"));
+
+        if (user.isEnabled()) {
+            user.setEnabled(false);
+        }
+        else {
+            user.setEnabled(true);
+        }
+
+        userRepository.save(user);
+    }
 }
