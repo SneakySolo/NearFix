@@ -1,11 +1,14 @@
 package com.SneakySolo.nearfix.service;
 
+import com.SneakySolo.nearfix.domain.user.Role;
 import com.SneakySolo.nearfix.domain.user.User;
 import com.SneakySolo.nearfix.dto.RegisterDTO;
 import com.SneakySolo.nearfix.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -46,5 +49,9 @@ public class UserService {
         }
 
         return user;
+    }
+
+    public List<User> getAllByRole(Role role) {
+        return userRepository.findByRole(role);
     }
 }
