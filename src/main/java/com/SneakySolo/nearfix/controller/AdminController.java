@@ -1,10 +1,8 @@
 package com.SneakySolo.nearfix.controller;
 
-import com.SneakySolo.nearfix.domain.message.Message;
 import com.SneakySolo.nearfix.domain.user.Role;
 import com.SneakySolo.nearfix.domain.user.User;
 import com.SneakySolo.nearfix.entity.AdminMessage;
-import com.SneakySolo.nearfix.repository.AdminMessageRepository;
 import com.SneakySolo.nearfix.repository.UserRepository;
 import com.SneakySolo.nearfix.service.AdminMessageService;
 import com.SneakySolo.nearfix.service.SessionService;
@@ -39,47 +37,45 @@ public class AdminController {
     }
 
     @PostMapping("/user/{userId}/toggle")
-    public String toggleUserStatus(@PathVariable Integer id) {
-        userService.toggleUserStatus(id);
-        return "/dashboard";
+    public String toggleUserStatus(@PathVariable Integer userId) {
+        userService.toggleUserStatus(userId);
+        return "redirect:/admin/dashboard";
     }
 
     @GetMapping("/chat/{targetUserId}")
-    public String getMessages (@PathVariable Integer id,
+    public String getMessages (@PathVariable Integer targetUserId,
                                HttpSession session, Model model) {
-        List<AdminMessage> messages = adminMessageService.getMessages(id);
-        User user = userRepository.findById(id)
+        List<AdminMessage> messages = adminMessageService.getMessages(targetUserId);
+        User user = userRepository.findById(targetUserId)
                 .orElseThrow(() -> new RuntimeException("error"));
 
-        model.addAttribute("user", user);
-        model.addAttribute("userId", user.getId());
+        model.addAttribute("targetUser", user);
+        model.addAttribute("targetUserId", targetUserId);
         model.addAttribute("messages", messages);
-        model.addAttribute("adminId",sessionService.getUserId(session));
+        model.addAttribute("adminId", sessionService.getUserId(session));
 
         return "admin/chat";
     }
 
     @PostMapping("/chat/{targetUserId}/send")
-    public String sendMessages (@PathVariable Integer id,
+    public String sendMessages (@PathVariable Integer targetUserId,
                                 @RequestParam String message,
                                 HttpSession session) {
-        adminMessageService.sendMessage(id,
-                sessionService.getUserId(session),
-                id, message);
-
-        return "redirect:/admin/chat/{targetUserId}" + id;
+        Integer adminId = sessionService.getUserId(session);
+        adminMessageService.sendMessage(adminId, targetUserId, message);
+        return "redirect:/admin/chat/" + targetUserId;
     }
 
-    @GetMapping("/admin/chat/{targetUserId}/messages")
-    public String getMessageFragments (@PathVariable Integer requestId,
+    @GetMapping("/chat/{targetUserId}/messages")
+    public String getMessageFragments (@PathVariable Integer targetUserId,
                                        HttpSession session, Model model) {
 
-        List<AdminMessage> messages = adminMessageService.getMessages(requestId);
+        List<AdminMessage> messages = adminMessageService.getMessages(targetUserId);
         Integer userId = sessionService.getUserId(session);
 
         model.addAttribute("messages", messages);
         model.addAttribute("userId", userId);
 
-        return "/chat-fragment";
+        return "admin/chat-fragment";
     }
 }

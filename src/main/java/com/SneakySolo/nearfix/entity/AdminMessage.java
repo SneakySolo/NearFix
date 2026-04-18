@@ -17,13 +17,13 @@ public class AdminMessage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private User admin;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private User targetUser;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private User sender;
 
     @Column(columnDefinition = "TEXT", length = 200)

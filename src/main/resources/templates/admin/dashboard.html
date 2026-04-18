@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard - NearFix</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f6f8; color: #333; }
+        .page-container { max-width: 900px; margin: 40px auto; padding: 0 1rem; }
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+        .page-header h2 { color: #1a1a2e; }
+        .section-title { font-size: 1rem; font-weight: 700; color: #374151; margin-bottom: 0.75rem; padding-bottom: 0.4rem; border-bottom: 2px solid #e5e7eb; }
+        .section { margin-bottom: 2.5rem; }
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
+        thead { background: #f9fafb; }
+        th { padding: 0.75rem 1rem; text-align: left; font-size: 0.85rem; color: #6b7280; font-weight: 600; border-bottom: 1px solid #e5e7eb; }
+        td { padding: 0.85rem 1rem; font-size: 0.9rem; border-bottom: 1px solid #f3f4f6; vertical-align: middle; }
+        tr:last-child td { border-bottom: none; }
+        .status-enabled  { color: #166534; font-weight: 600; }
+        .status-disabled { color: #991b1b; font-weight: 600; }
+        .btn-chat {
+            display: inline-block;
+            padding: 0.35rem 0.8rem;
+            background: #4f46e5;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 0.82rem;
+            margin-right: 0.4rem;
+        }
+        .btn-chat:hover { background: #4338ca; }
+        .btn-disable {
+            padding: 0.35rem 0.8rem;
+            background: #dc2626;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 0.82rem;
+            cursor: pointer;
+        }
+        .btn-disable:hover { background: #b91c1c; }
+        .btn-enable {
+            padding: 0.35rem 0.8rem;
+            background: #059669;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 0.82rem;
+            cursor: pointer;
+        }
+        .btn-enable:hover { background: #047857; }
+        .empty-state { text-align: center; color: #aaa; padding: 2rem; font-size: 0.9rem; }
+        .nav-links { text-align: right; }
+        .nav-links a { color: #4f46e5; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+<div class="page-container">
+
+    <div class="page-header">
+        <h2>Admin Dashboard</h2>
+    </div>
+
+    <!-- Customers -->
+    <div class="section">
+        <div class="section-title">Customers</div>
+        <table>
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${#lists.isEmpty(customers)}">
+                <td colspan="5" class="empty-state">No customers yet.</td>
+            </tr>
+            <tr th:each="user : ${customers}">
+                <td th:text="${user.fullname}"></td>
+                <td th:text="${user.email}"></td>
+                <td th:text="${user.phone}"></td>
+                <td>
+                    <span th:if="${user.enabled}" class="status-enabled">Enabled</span>
+                    <span th:if="${!user.enabled}" class="status-disabled">Disabled</span>
+                </td>
+                <td>
+                    <a th:href="@{/admin/chat/{id}(id=${user.id})}" class="btn-chat">💬 Chat</a>
+                    <form th:action="@{/admin/user/{id}/toggle(id=${user.id})}"
+                          method="post" style="display:inline;">
+                        <button type="submit"
+                                th:class="${user.enabled} ? 'btn-disable' : 'btn-enable'"
+                                th:text="${user.enabled} ? 'Disable' : 'Enable'">
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Service Providers -->
+    <div class="section">
+        <div class="section-title">Service Providers</div>
+        <table>
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${#lists.isEmpty(providers)}">
+                <td colspan="5" class="empty-state">No service providers yet.</td>
+            </tr>
+            <tr th:each="user : ${providers}">
+                <td th:text="${user.fullname}"></td>
+                <td th:text="${user.email}"></td>
+                <td th:text="${user.phone}"></td>
+                <td>
+                    <span th:if="${user.enabled}" class="status-enabled">Enabled</span>
+                    <span th:if="${!user.enabled}" class="status-disabled">Disabled</span>
+                </td>
+                <td>
+                    <a th:href="@{/admin/chat/{id}(id=${user.id})}" class="btn-chat">💬 Chat</a>
+                    <form th:action="@{/admin/user/{id}/toggle(id=${user.id})}"
+                          method="post" style="display:inline;">
+                        <button type="submit"
+                                th:class="${user.enabled} ? 'btn-disable' : 'btn-enable'"
+                                th:text="${user.enabled} ? 'Disable' : 'Enable'">
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="nav-links">
+        <a th:href="@{/auth/logout}">Logout</a>
+    </div>
+
+</div>
+</body>
+</html>

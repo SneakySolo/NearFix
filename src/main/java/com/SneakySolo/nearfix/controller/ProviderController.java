@@ -1,10 +1,13 @@
 package com.SneakySolo.nearfix.controller;
 
+import com.SneakySolo.nearfix.domain.user.Role;
 import com.SneakySolo.nearfix.domain.user.User;
 import com.SneakySolo.nearfix.dto.PlaceBidDTO;
+import com.SneakySolo.nearfix.entity.AdminMessage;
 import com.SneakySolo.nearfix.entity.RepairRequest;
 import com.SneakySolo.nearfix.repository.RepairRequestRepository;
 import com.SneakySolo.nearfix.repository.UserRepository;
+import com.SneakySolo.nearfix.service.AdminMessageService;
 import com.SneakySolo.nearfix.service.BidService;
 import com.SneakySolo.nearfix.service.SessionService;
 import jakarta.servlet.http.HttpSession;
@@ -24,6 +27,7 @@ public class ProviderController {
     private final BidService bidService;
     private final SessionService sessionService;
     private final UserRepository userRepository;
+    private final AdminMessageService adminMessageService;
 
     @GetMapping("/dashboard")
     public String dashboard(HttpSession session, Model model) {
@@ -107,5 +111,38 @@ public class ProviderController {
 
         model.addAttribute("requests", requests);
         return "provider/history";
+    }
+
+    @GetMapping("/admin-chat")
+    public String getAdminMessages(HttpSession session, Model model) {
+        Integer userId = sessionService.getUserId(session);
+        List<AdminMessage> messages = adminMessageService.getMessages(userId);
+        User admin = userRepository.findFirstByRole(Role.ADMIN);
+
+        model.addAttribute("messages", messages);
+        model.addAttribute("adminId", admin.getId());
+        model.addAttribute("userId", userId);
+        model.addAttribute("targetUserId", userId);
+
+        return "provider/admin-chat";
+    }
+
+    @PostMapping("/admin-chat/send")
+    public String sendAdminMessage(@RequestParam String message,
+                                   HttpSession session) {
+        Integer userId = sessionService.getUserId(session);
+        adminMessageService.sendMessage(userId, userId, message);
+        return "redirect:/provider/admin-chat";
+    }
+
+    @GetMapping("/admin-chat/messages")
+    public String getAdminChatFragment(HttpSession session, Model model) {
+        Integer userId = sessionService.getUserId(session);
+        List<AdminMessage> messages = adminMessageService.getMessages(userId);
+
+        model.addAttribute("messages", messages);
+        model.addAttribute("userId", userId);
+
+        return "provider/admin-chat-fragment";
     }
 }

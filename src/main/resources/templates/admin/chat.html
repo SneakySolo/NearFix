@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Chat - NearFix</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f6f8; color: #333; }
+        .page-container { max-width: 700px; margin: 30px auto; padding: 0 1rem; }
+        .chat-header { background: white; border-radius: 10px; padding: 1rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.07); display: flex; justify-content: space-between; align-items: center; }
+        .chat-header h2 { color: #1a1a2e; font-size: 1.1rem; }
+        .back-link { color: #4f46e5; font-size: 0.9rem; text-decoration: none; }
+        .chat-box { background: white; border-radius: 10px; padding: 1.2rem; height: 420px; overflow-y: auto; box-shadow: 0 2px 8px rgba(0,0,0,0.07); margin-bottom: 1rem; display: flex; flex-direction: column; gap: 0.75rem; }
+        .message-row { display: flex; flex-direction: column; }
+        .message-row.mine { align-items: flex-end; }
+        .message-row.theirs { align-items: flex-start; }
+        .bubble { max-width: 70%; padding: 0.6rem 0.9rem; border-radius: 14px; font-size: 0.92rem; line-height: 1.4; }
+        .mine .bubble { background: #4f46e5; color: white; border-bottom-right-radius: 4px; }
+        .theirs .bubble { background: #f0f0f0; color: #333; border-bottom-left-radius: 4px; }
+        .msg-meta { font-size: 0.72rem; color: #aaa; margin-top: 3px; padding: 0 4px; }
+        .empty-chat { text-align: center; color: #bbb; margin: auto; font-size: 0.9rem; }
+        .chat-input-area { background: white; border-radius: 10px; padding: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.07); display: flex; gap: 0.75rem; }
+        .chat-input-area input { flex: 1; padding: 0.65rem 1rem; border: 1px solid #ccc; border-radius: 8px; font-size: 0.95rem; font-family: inherit; }
+        .chat-input-area input:focus { outline: none; border-color: #4f46e5; }
+        .btn-send { padding: 0.65rem 1.3rem; background: #4f46e5; color: white; border: none; border-radius: 8px; font-size: 0.95rem; cursor: pointer; }
+        .btn-send:hover { background: #4338ca; }
+    </style>
+</head>
+<body>
+<div class="page-container">
+    <div class="chat-header">
+        <h2 th:text="'Chat with ' + ${targetUser.fullname}"></h2>
+        <a class="back-link" th:href="@{/admin/dashboard}">← Back to Dashboard</a>
+    </div>
+
+    <div class="chat-box" id="chat-box">
+        <div th:if="${#lists.isEmpty(messages)}" class="empty-chat">No messages yet.</div>
+        <div th:each="msg : ${messages}"
+             class="message-row"
+             th:classappend="${msg.sender.id == adminId} ? 'mine' : 'theirs'">
+            <div class="bubble" th:text="${msg.message}"></div>
+            <span class="msg-meta"
+                  th:text="${msg.sender.fullname} + ' · ' + ${#temporals.format(msg.createdAt, 'HH:mm')}">
+            </span>
+        </div>
+    </div>
+
+    <form class="chat-input-area"
+          th:action="@{/admin/chat/{id}/send(id=${targetUserId})}"
+          method="post">
+        <input type="text" name="message" placeholder="Type a message..." autocomplete="off"/>
+        <button type="submit" class="btn-send">Send</button>
+    </form>
+</div>
+
+<script th:inline="javascript">
+    const targetUserId = [[${targetUserId}]];
+    function scrollToBottom() {
+        const box = document.getElementById('chat-box');
+        box.scrollTop = box.scrollHeight;
+    }
+    scrollToBottom();
+    setInterval(function() {
+        fetch('/admin/chat/' + targetUserId + '/messages')
+            .then(r => r.text())
+            .then(html => {
+                document.getElementById('chat-box').innerHTML = html;
+                scrollToBottom();
+            });
+    }, 3000);
+</script>
+</body>
+</html>

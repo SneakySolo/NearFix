@@ -1,12 +1,14 @@
 package com.SneakySolo.nearfix.controller;
 
 import com.SneakySolo.nearfix.domain.bid.Bid;
+import com.SneakySolo.nearfix.domain.user.Role;
+import com.SneakySolo.nearfix.domain.user.User;
 import com.SneakySolo.nearfix.dto.CreateRequestDTO;
+import com.SneakySolo.nearfix.entity.AdminMessage;
 import com.SneakySolo.nearfix.entity.RepairRequest;
-import com.SneakySolo.nearfix.service.BidService;
-import com.SneakySolo.nearfix.service.RepairRequestService;
-import com.SneakySolo.nearfix.service.ReviewService;
-import com.SneakySolo.nearfix.service.SessionService;
+import com.SneakySolo.nearfix.repository.AdminMessageRepository;
+import com.SneakySolo.nearfix.repository.UserRepository;
+import com.SneakySolo.nearfix.service.*;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -27,6 +29,8 @@ public class CustomerController {
     private final SessionService sessionService;
     private final BidService bidService;
     private final ReviewService reviewService;
+    private final AdminMessageService adminMessageService;
+    private final UserRepository userRepository;
 
     @GetMapping("/dashboard")
     public String dashboard(HttpSession session, Model model) {
@@ -110,5 +114,38 @@ public class CustomerController {
         catch (RuntimeException e) {
             return "redirect:/customer/request/" + requestId + "?error=" + e.getMessage();
         }
+    }
+
+    @GetMapping("/admin-chat")
+    public String getAdminMessages (HttpSession session, Model model) {
+        Integer userId = sessionService.getUserId(session);
+        List<AdminMessage> messages = adminMessageService.getMessages(userId);
+        User admin = userRepository.findFirstByRole(Role.ADMIN);
+
+        model.addAttribute("messages", messages);
+        model.addAttribute("adminId", admin.getId());
+        model.addAttribute("userId", userId);
+        model.addAttribute("targetUserId", userId);
+
+        return "customer/admin-chat";
+    }
+
+    @PostMapping("/admin-chat/send")
+    public String sendMessages (@RequestParam String message,
+                                HttpSession session) {
+        Integer userId = sessionService.getUserId(session);
+        adminMessageService.sendMessage(userId, userId, message);
+        return "redirect:/customer/admin-chat";
+    }
+
+    @GetMapping("/admin-chat/messages")
+    public String getAdminChatFragment(HttpSession session, Model model) {
+        Integer userId = sessionService.getUserId(session);
+        List<AdminMessage> messages = adminMessageService.getMessages(userId);
+
+        model.addAttribute("messages", messages);
+        model.addAttribute("userId", userId);
+
+        return "customer/admin-chat-fragment";
     }
 }
