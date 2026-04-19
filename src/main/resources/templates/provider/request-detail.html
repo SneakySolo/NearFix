@@ -26,7 +26,7 @@
     </style>
 </head>
 <body>
-
+<div th:replace="~{layout/navbar :: navbar}"></div>
 <div class="page-container">
 
     <!-- Request info -->
@@ -71,7 +71,7 @@
                     <textarea name="message" rows="3" placeholder="Any notes for the customer..."></textarea>
                 </div>
 
-                <button type="submit" class="btn-primary">Submit Bid</button>
+                <button type="submit" onclick="this.disabled=true; this.form.submit();" class="btn-primary">Submit Bid</button>
             </form>
         </div>
     </div>

@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NearFix - Local Repair Services</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+
+        a { text-decoration: none; }
+
+        /* ── NAVBAR ── */
+        .navbar {
+            background-color: #0f172a;
+            height: 62px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .navbar-brand {
+            font-size: 1.45rem;
+            font-weight: 700;
+            color: white;
+            letter-spacing: -0.3px;
+        }
+
+        .navbar-brand span { color: #38bdf8; }
+
+        .navbar-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .navbar-links a {
+            color: rgba(255,255,255,0.65);
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.15s;
+        }
+
+        .navbar-links a:hover { color: #38bdf8; }
+
+        .navbar-buttons { display: flex; gap: 0.75rem; }
+
+        .btn-nav-outline {
+            padding: 0.42rem 1.1rem;
+            border: 1.5px solid rgba(255,255,255,0.3);
+            border-radius: 6px;
+            color: rgba(255,255,255,0.8);
+            font-size: 0.87rem;
+            font-weight: 500;
+            transition: all 0.15s;
+        }
+
+        .btn-nav-outline:hover {
+            border-color: white;
+            color: white;
+        }
+
+        .btn-nav-primary {
+            padding: 0.42rem 1.1rem;
+            background: #0ea5e9;
+            border: 1.5px solid #0ea5e9;
+            border-radius: 6px;
+            color: white;
+            font-size: 0.87rem;
+            font-weight: 600;
+            transition: background 0.15s;
+        }
+
+        .btn-nav-primary:hover { background: #0284c7; border-color: #0284c7; }
+
+        /* ── HERO ── */
+        .hero {
+            background-image: url("https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=1600&q=80");
+            background-size: cover;
+            background-position: center;
+            height: 500px;
+            padding-top: 75px;
+            padding-left: 3rem;
+        }
+
+        .hero-box {
+            background-color: rgba(15, 23, 42, 0.88);
+            color: white;
+            padding: 2rem 2.5rem;
+            max-width: 480px;
+            border-radius: 12px;
+            border-left: 4px solid #0ea5e9;
+        }
+
+        .hero-box h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            line-height: 1.25;
+            color: white;
+        }
+
+        .hero-box h1 span { color: #38bdf8; }
+
+        .hero-box p {
+            font-size: 0.93rem;
+            line-height: 1.75;
+            color: rgba(255,255,255,0.75);
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-buttons { display: flex; gap: 0.75rem; }
+
+        .btn-hero-primary {
+            padding: 0.65rem 1.5rem;
+            background: #0ea5e9;
+            color: white;
+            border-radius: 7px;
+            font-size: 0.92rem;
+            font-weight: 600;
+            border: 2px solid #0ea5e9;
+            transition: background 0.15s;
+        }
+
+        .btn-hero-primary:hover { background: #0284c7; border-color: #0284c7; }
+
+        .btn-hero-ghost {
+            padding: 0.65rem 1.5rem;
+            background: transparent;
+            color: white;
+            border-radius: 7px;
+            font-size: 0.92rem;
+            font-weight: 500;
+            border: 2px solid rgba(255,255,255,0.4);
+            transition: border-color 0.15s;
+        }
+
+        .btn-hero-ghost:hover { border-color: white; }
+
+        /* ── TWO COLUMN ── */
+        .two-col {
+            display: flex;
+            gap: 1.5rem;
+            padding: 2.5rem 2.5rem;
+            background: white;
+            margin-top: -50px;
+            border-radius: 16px;
+            margin-left: 2rem;
+            margin-right: 2rem;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+
+        .two-col-box {
+            flex: 1;
+            border-radius: 12px;
+            padding: 1.8rem 2rem;
+        }
+
+        .two-col-box.blue-box {
+            background-color: #f0f9ff;
+            border: 1.5px solid #bae6fd;
+        }
+
+        .two-col-box.slate-box {
+            background-color: #f8fafc;
+            border: 1.5px solid #e2e8f0;
+        }
+
+        .two-col-box h2 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: #0f172a;
+        }
+
+        .two-col-box p {
+            font-size: 0.87rem;
+            color: #64748b;
+            line-height: 1.65;
+            margin-bottom: 0.4rem;
+        }
+
+        .two-col-box strong { color: #0f172a; }
+
+        .btn-blue {
+            display: inline-block;
+            margin-top: 1.2rem;
+            padding: 0.55rem 1.3rem;
+            background: #0ea5e9;
+            color: white;
+            border-radius: 7px;
+            font-size: 0.87rem;
+            font-weight: 600;
+            transition: background 0.15s;
+        }
+
+        .btn-blue:hover { background: #0284c7; }
+
+        .btn-slate {
+            display: inline-block;
+            margin-top: 1.2rem;
+            padding: 0.55rem 1.3rem;
+            background: #0f172a;
+            color: white;
+            border-radius: 7px;
+            font-size: 0.87rem;
+            font-weight: 600;
+            transition: background 0.15s;
+        }
+
+        .btn-slate:hover { background: #1e293b; }
+
+        /* ── CARDS ── */
+        .cards-section {
+            padding: 3.5rem 2.5rem 2rem;
+        }
+
+        .cards-section h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 0.4rem;
+            text-align: center;
+        }
+
+        .cards-section .cards-sub {
+            text-align: center;
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-bottom: 1.75rem;
+        }
+
+        .cards-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.25rem;
+            justify-content: center;
+        }
+
+        .card {
+            flex: 1 1 calc(25% - 1.25rem);
+            border-radius: 12px;
+            padding: 1.4rem 1.5rem;
+            height: 185px;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.18s, box-shadow 0.18s;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+        }
+
+        .card.white-card {
+            background: white;
+            border: 1.5px solid #e2e8f0;
+        }
+
+        .card.dark-card {
+            background: #0f172a;
+            border: 1.5px solid #0f172a;
+        }
+
+        .card-icon { font-size: 1.5rem; margin-bottom: 0.6rem; }
+
+        .card h3 {
+            font-size: 0.93rem;
+            font-weight: 700;
+            margin-bottom: 0.35rem;
+        }
+
+        .white-card h3 { color: #0f172a; }
+        .dark-card h3 { color: white; }
+
+        .card p {
+            font-size: 0.81rem;
+            line-height: 1.55;
+        }
+
+        .white-card p { color: #64748b; }
+        .dark-card p { color: rgba(255,255,255,0.65); }
+
+        /* ── CTA BANNER ── */
+        .cta-banner {
+            background-image: url("https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1400&q=80");
+            background-size: cover;
+            background-position: center;
+            border-radius: 14px;
+            margin: 1rem 2.5rem 2rem;
+            height: 230px;
+            position: relative;
+        }
+
+        .cta-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.82);
+            border-radius: 14px;
+            padding: 2.5rem 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .cta-overlay h1 {
+            font-size: 1.9rem;
+            color: white;
+            font-weight: 700;
+            margin-bottom: 0.4rem;
+        }
+
+        .cta-overlay p {
+            font-size: 0.95rem;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 1.2rem;
+        }
+
+        .btn-cta {
+            display: inline-block;
+            padding: 0.65rem 1.5rem;
+            background: #0ea5e9;
+            color: white;
+            border-radius: 8px;
+            font-size: 0.92rem;
+            font-weight: 600;
+            width: fit-content;
+            transition: background 0.15s;
+        }
+
+        .btn-cta:hover { background: #0284c7; }
+
+        /* ── FOOTER ── */
+        .footer {
+            background-color: #0f172a;
+            padding: 2rem 2.5rem;
+        }
+
+        .footer-brand {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.35rem;
+        }
+
+        .footer-brand span { color: #38bdf8; }
+
+        .footer-tagline {
+            font-size: 0.82rem;
+            color: rgba(255,255,255,0.4);
+            margin-bottom: 1rem;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 1.75rem;
+        }
+
+        .footer-links a {
+            color: rgba(255,255,255,0.5);
+            font-size: 0.85rem;
+            transition: color 0.15s;
+        }
+
+        .footer-links a:hover { color: #38bdf8; }
+
+        .footer-copy {
+            margin-top: 1.25rem;
+            font-size: 0.76rem;
+            color: rgba(255,255,255,0.25);
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <div class="navbar-brand">Near<span>Fix</span></div>
+
+    <div class="navbar-links">
+        <a href="#how-it-works">How it works</a>
+        <a href="#features">Features</a>
+        <a href="#for-shops">For Shops</a>
+    </div>
+
+    <div class="navbar-buttons">
+        <a th:href="@{/auth/login}" class="btn-nav-outline">Login</a>
+        <a th:href="@{/auth/register}" class="btn-nav-primary">Register</a>
+    </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+    <div class="hero-box">
+        <h1>Get your device fixed by <span>local experts</span></h1>
+        <p>
+            Post your repair request, receive bids from verified local shops,
+            and pick the best deal — all in one place.
+        </p>
+        <div class="hero-buttons">
+            <a th:href="@{/auth/register}" class="btn-hero-primary">Get Started</a>
+            <a href="#how-it-works" class="btn-hero-ghost">Learn More</a>
+        </div>
+    </div>
+</div>
+
+<!-- TWO COLUMN -->
+<div class="two-col" id="how-it-works">
+    <div class="two-col-box blue-box">
+        <h2>Post a Repair Request</h2>
+        <p>Facing a broken screen, faulty battery, or any device issue? Post a request in minutes.</p>
+        <p>
+            <strong>Steps:</strong><br>
+            1. Describe your issue and attach photos or videos.<br>
+            2. Your location is used to find nearby shops.<br>
+            3. Wait for competitive bids to come in.
+        </p>
+        <a th:href="@{/auth/register}" class="btn-blue">Post a Request</a>
+    </div>
+    <div class="two-col-box slate-box">
+        <h2>Track Your Requests</h2>
+        <p>View all your repair requests from one dashboard — check bids, accept an offer, and chat with the shop directly.</p>
+        <p>
+            Each request moves through stages — Pending, Accepted, Done.
+            You stay in control at every step.
+        </p>
+        <a th:href="@{/auth/login}" class="btn-slate">Go to Dashboard</a>
+    </div>
+</div>
+
+<!-- CARDS -->
+<div class="cards-section" id="features">
+    <h2>What you can do on NearFix</h2>
+    <p class="cards-sub">Everything you need to get a repair done the right way</p>
+    <div class="cards-grid">
+        <div class="card white-card">
+            <div class="card-icon">📍</div>
+            <h3>Location Based Bids</h3>
+            <p>Only shops within 12km can bid on your job. Always someone nearby who can help.</p>
+        </div>
+        <div class="card dark-card">
+            <div class="card-icon">⚡</div>
+            <h3>12 Hour Bidding</h3>
+            <p>Bids close after 12 hours. Get competitive offers fast without waiting around.</p>
+        </div>
+        <div class="card white-card">
+            <div class="card-icon">💬</div>
+            <h3>Chat with Shop</h3>
+            <p>After accepting a bid, chat directly to sort out drop-off and pickup.</p>
+        </div>
+        <div class="card dark-card">
+            <div class="card-icon">⭐</div>
+            <h3>Star Ratings</h3>
+            <p>Every job gets rated. Ratings show on bids so you always make an informed choice.</p>
+        </div>
+    </div>
+</div>
+
+<!-- CTA BANNER -->
+<div class="cta-banner" id="for-shops">
+    <div class="cta-overlay">
+        <h1>Are you a repair shop?</h1>
+        <p>Register and start receiving repair jobs from customers near you — no ads, no subscription.</p>
+        <a th:href="@{/auth/register}" class="btn-cta">Register Your Shop</a>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+    <div class="footer-brand">Near<span>Fix</span></div>
+    <div class="footer-tagline">Local repair services, made simple.</div>
+    <div class="footer-links">
+        <a href="#how-it-works">How it works</a>
+        <a href="#features">Features</a>
+        <a th:href="@{/auth/register}">Register</a>
+        <a th:href="@{/auth/login}">Login</a>
+        <a href="#">Terms &amp; Conditions</a>
+        <a href="#">Privacy Policy</a>
+    </div>
+    <div class="footer-copy">&copy; 2025 NearFix. All rights reserved.</div>
+</div>
+
+</body>
+</html>

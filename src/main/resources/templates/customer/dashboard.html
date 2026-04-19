@@ -94,7 +94,7 @@
     </style>
 </head>
 <body>
-
+<div th:replace="~{layout/navbar :: navbar}"></div>
 <div class="page-container">
 
     <div class="dashboard-header">
@@ -159,13 +159,6 @@
             </div>
         </div>
     </div>
-
-    <div class="nav-links">
-        <a th:href="@{/auth/logout}">Logout</a>
-        <br>
-        <a th:href="@{/customer/admin-chat}" style="color:#4f46e5; font-size:0.9rem;">💬 Chat with Admin</a>
-    </div>
-
 </div>
 
 <!-- Location capture -->

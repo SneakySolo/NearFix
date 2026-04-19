@@ -34,4 +34,8 @@ public class SessionService {
             response.sendRedirect("/auth/login");
         }
     }
+
+    public boolean hasRole(HttpSession session, Role role) {
+        return role == getUserRole(session);
+    }
 }

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<nav th:fragment="navbar">
+    <style>
+        .navbar {
+            background: #1a1a2e;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 56px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        .navbar-brand {
+            color: white;
+            font-weight: 700;
+            font-size: 1.2rem;
+            text-decoration: none;
+            letter-spacing: 0.5px;
+        }
+        .navbar-links {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        .navbar-links a {
+            color: #cbd5e1;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.15s;
+        }
+        .navbar-links a:hover { color: white; }
+        .navbar-logout {
+            color: #f87171 !important;
+        }
+        .navbar-logout:hover { color: #fca5a5 !important; }
+    </style>
+
+    <div class="navbar">
+        <a class="navbar-brand" href="#">NearFix</a>
+
+        <div class="navbar-links">
+
+            <!-- CUSTOMER links -->
+            <th:block th:if="${session.USER_ROLE != null and session.USER_ROLE.name() == 'CUSTOMER'}">
+                <a th:href="@{/customer/dashboard}">Dashboard</a>
+                <a th:href="@{/customer/admin-chat}">💬 Admin</a>
+            </th:block>
+
+            <!-- SERVICE_PROVIDER links -->
+            <th:block th:if="${session.USER_ROLE != null and session.USER_ROLE.name() == 'SERVICE_PROVIDER'}">
+                <a th:href="@{/provider/dashboard}">Dashboard</a>
+                <a th:href="@{/provider/accepted}">Active Jobs</a>
+                <a th:href="@{/provider/history}">Work History</a>
+                <a th:href="@{/provider/admin-chat}">💬 Admin</a>
+            </th:block>
+
+            <!-- ADMIN links -->
+            <th:block th:if="${session.USER_ROLE != null and session.USER_ROLE.name() == 'ADMIN'}">
+                <a th:href="@{/admin/dashboard}">Dashboard</a>
+            </th:block>
+
+            <!-- Logout — show for anyone logged in -->
+            <a th:if="${session.USER_ID != null}"
+               th:href="@{/auth/logout}"
+               class="navbar-logout">Logout</a>
+
+        </div>
+    </div>
+</nav>
+</body>
+</html>

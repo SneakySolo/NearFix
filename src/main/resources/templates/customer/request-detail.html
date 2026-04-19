@@ -155,7 +155,7 @@
     </style>
 </head>
 <body>
-
+<div th:replace="~{layout/navbar :: navbar}"></div>
 <div class="page-container">
 
     <!-- Request Info Card -->
@@ -236,7 +236,7 @@
         <form th:if="${request.status.name() == 'ACCEPTED'}"
               th:action="@{/customer/request/{id}/done(id=${request.id})}"
               method="post">
-            <button type="submit" class="btn-done">✅ Mark as Done</button>
+            <button type="submit" onclick="this.disabled=true; this.form.submit();" class="btn-done">✅ Mark as Done</button>
         </form>
 
         <a th:if="${request.status.name() == 'DONE'}"

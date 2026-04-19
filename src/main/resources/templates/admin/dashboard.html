@@ -55,7 +55,7 @@
     </style>
 </head>
 <body>
-
+<div th:replace="~{layout/navbar :: navbar}"></div>
 <div class="page-container">
 
     <div class="page-header">
@@ -91,7 +91,7 @@
                     <a th:href="@{/admin/chat/{id}(id=${user.id})}" class="btn-chat">💬 Chat</a>
                     <form th:action="@{/admin/user/{id}/toggle(id=${user.id})}"
                           method="post" style="display:inline;">
-                        <button type="submit"
+                        <button type="submit" onclick="this.disabled=true; this.form.submit();"
                                 th:class="${user.enabled} ? 'btn-disable' : 'btn-enable'"
                                 th:text="${user.enabled} ? 'Disable' : 'Enable'">
                         </button>
@@ -131,7 +131,7 @@
                     <a th:href="@{/admin/chat/{id}(id=${user.id})}" class="btn-chat">💬 Chat</a>
                     <form th:action="@{/admin/user/{id}/toggle(id=${user.id})}"
                           method="post" style="display:inline;">
-                        <button type="submit"
+                        <button type="submit" onclick="this.disabled=true; this.form.submit();"
                                 th:class="${user.enabled} ? 'btn-disable' : 'btn-enable'"
                                 th:text="${user.enabled} ? 'Disable' : 'Enable'">
                         </button>
@@ -141,11 +141,6 @@
             </tbody>
         </table>
     </div>
-
-    <div class="nav-links">
-        <a th:href="@{/auth/logout}">Logout</a>
-    </div>
-
 </div>
 </body>
 </html>

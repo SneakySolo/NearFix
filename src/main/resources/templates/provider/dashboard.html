@@ -22,7 +22,7 @@
     </style>
 </head>
 <body>
-
+<div th:replace="~{layout/navbar :: navbar}"></div>
 <div class="page-container">
     <div class="dashboard-header">
         <h2>Nearby Repair Requests</h2>
@@ -44,13 +44,6 @@
             <div class="request-date" th:text="${#temporals.format(req.createdAt, 'dd MMM yyyy, HH:mm')}"></div>
             <a class="btn-secondary" th:href="@{/provider/request/{id}(id=${req.id})}">View & Bid →</a>
         </div>
-    </div>
-    <a th:href="@{/provider/accepted}" class="btn-primary">My Accepted Jobs</a>
-    <div class="nav-links" style="margin-top:2rem; display:flex; justify-content:space-between;">
-        <a th:href="@{/provider/accepted}" style="color:#4f46e5; font-size:0.9rem;">My Active Jobs</a>
-        <a th:href="@{/provider/history}" style="color:#4f46e5; font-size:0.9rem;">Work History</a>
-        <a th:href="@{/auth/logout}" style="color:#4f46e5; font-size:0.9rem;">Logout</a>
-        <a th:href="@{/provider/admin-chat}" style="color:#4f46e5; font-size:0.9rem;">💬 Chat with Admin</a>
     </div>
 </div>
 

@@ -27,6 +27,7 @@ public class AdminController {
 
     @GetMapping("/dashboard")
     public String getCustomerAndProvider (Model model){
+
         List<User> customers = userService.getAllByRole(Role.CUSTOMER);
         List<User> providers = userService.getAllByRole(Role.SERVICE_PROVIDER);
 
@@ -37,7 +38,12 @@ public class AdminController {
     }
 
     @PostMapping("/user/{userId}/toggle")
-    public String toggleUserStatus(@PathVariable Integer userId) {
+    public String toggleUserStatus(@PathVariable Integer userId,
+                                   HttpSession session) {
+        if (!sessionService.hasRole(session, Role.ADMIN)) {
+            return "redirect:/auth/login";
+        }
+
         userService.toggleUserStatus(userId);
         return "redirect:/admin/dashboard";
     }
@@ -45,6 +51,11 @@ public class AdminController {
     @GetMapping("/chat/{targetUserId}")
     public String getMessages (@PathVariable Integer targetUserId,
                                HttpSession session, Model model) {
+
+        if (!sessionService.hasRole(session, Role.ADMIN)) {
+            return "redirect:/auth/login";
+        }
+
         List<AdminMessage> messages = adminMessageService.getMessages(targetUserId);
         User user = userRepository.findById(targetUserId)
                 .orElseThrow(() -> new RuntimeException("error"));
@@ -61,6 +72,11 @@ public class AdminController {
     public String sendMessages (@PathVariable Integer targetUserId,
                                 @RequestParam String message,
                                 HttpSession session) {
+
+        if (!sessionService.hasRole(session, Role.ADMIN)) {
+            return "redirect:/auth/login";
+        }
+
         Integer adminId = sessionService.getUserId(session);
         adminMessageService.sendMessage(adminId, targetUserId, message);
         return "redirect:/admin/chat/" + targetUserId;
@@ -69,6 +85,10 @@ public class AdminController {
     @GetMapping("/chat/{targetUserId}/messages")
     public String getMessageFragments (@PathVariable Integer targetUserId,
                                        HttpSession session, Model model) {
+
+        if (!sessionService.hasRole(session, Role.ADMIN)) {
+            return "redirect:/auth/login";
+        }
 
         List<AdminMessage> messages = adminMessageService.getMessages(targetUserId);
         Integer userId = sessionService.getUserId(session);

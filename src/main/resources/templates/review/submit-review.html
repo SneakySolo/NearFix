@@ -85,7 +85,7 @@
     </style>
 </head>
 <body>
-
+<div th:replace="~{layout/navbar :: navbar}"></div>
 <div class="page-container">
     <div class="card">
         <h2>Leave a Review</h2>
@@ -135,7 +135,7 @@
                     <textarea name="comment" rows="4" placeholder="How was the service?"></textarea>
                 </div>
 
-                <button type="submit" class="btn-primary">Submit Review</button>
+                <button type="submit" onclick="this.disabled=true; this.form.submit();" class="btn-primary">Submit Review</button>
             </form>
         </div>
 

@@ -116,7 +116,7 @@
     </style>
 </head>
 <body>
-
+<div th:replace="~{layout/navbar :: navbar}"></div>
 <div class="page-container">
 
     <!-- Header -->
@@ -145,7 +145,7 @@
           th:action="@{/chat/{id}/send(id=${requestId})}"
           method="post">
         <input type="text" name="message" placeholder="Type a message..." autocomplete="off"/>
-        <button type="submit" class="btn-send">Send</button>
+        <button type="submit" onclick="this.disabled=true; this.form.submit();" class="btn-send">Send</button>
     </form>
 
 </div>

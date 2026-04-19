@@ -4,6 +4,7 @@ import com.SneakySolo.nearfix.domain.user.Role;
 import com.SneakySolo.nearfix.domain.user.User;
 import com.SneakySolo.nearfix.dto.LoginDTO;
 import com.SneakySolo.nearfix.dto.RegisterDTO;
+import com.SneakySolo.nearfix.repository.RepairShopRepository;
 import com.SneakySolo.nearfix.service.SessionService;
 import com.SneakySolo.nearfix.service.UserService;
 import jakarta.servlet.http.HttpSession;
@@ -24,6 +25,7 @@ public class AuthController {
 
     private final UserService userService;
     private final SessionService sessionService;
+    private final RepairShopRepository repairShopRepository;
 
     @GetMapping("/register")
     public String showRegister (Model model) {
@@ -81,6 +83,9 @@ public class AuthController {
             return "redirect:/customer/dashboard";
         }
         if (user.getRole() == Role.SERVICE_PROVIDER) {
+            if (repairShopRepository.findByOwnerId(user.getId()).isEmpty()) {
+                return "redirect:/provider/setup-shop";
+            }
             return "redirect:/provider/dashboard";
         }
 

@@ -2,6 +2,7 @@ package com.SneakySolo.nearfix.controller;
 
 import com.SneakySolo.nearfix.domain.user.Role;
 import com.SneakySolo.nearfix.domain.user.User;
+import com.SneakySolo.nearfix.dto.CreateShopDTO;
 import com.SneakySolo.nearfix.dto.PlaceBidDTO;
 import com.SneakySolo.nearfix.entity.AdminMessage;
 import com.SneakySolo.nearfix.entity.RepairRequest;
@@ -9,6 +10,7 @@ import com.SneakySolo.nearfix.repository.RepairRequestRepository;
 import com.SneakySolo.nearfix.repository.UserRepository;
 import com.SneakySolo.nearfix.service.AdminMessageService;
 import com.SneakySolo.nearfix.service.BidService;
+import com.SneakySolo.nearfix.service.RepairShopService;
 import com.SneakySolo.nearfix.service.SessionService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -28,10 +30,10 @@ public class ProviderController {
     private final SessionService sessionService;
     private final UserRepository userRepository;
     private final AdminMessageService adminMessageService;
+    private final RepairShopService repairShopService;
 
     @GetMapping("/dashboard")
     public String dashboard(HttpSession session, Model model) {
-
         Integer userId = sessionService.getUserId(session);
 
         User provider = userRepository.findById(userId)
@@ -56,6 +58,10 @@ public class ProviderController {
                               HttpSession session,
                               Model model) {
 
+        if (!sessionService.hasRole(session, Role.SERVICE_PROVIDER)) {
+            return "redirect:/auth/login";
+        }
+
         Integer userId = sessionService.getUserId(session);
 
         RepairRequest request = repairRequestRepository.findById(requestId)
@@ -78,6 +84,11 @@ public class ProviderController {
                            @RequestParam(required = false) String message,
                            HttpSession session,
                            Model model) {
+
+        if (!sessionService.hasRole(session, Role.SERVICE_PROVIDER)) {
+            return "redirect:/auth/login";
+        }
+
         try {
             Integer userId = sessionService.getUserId(session);
 
@@ -97,6 +108,11 @@ public class ProviderController {
 
     @GetMapping("/accepted")
     public String providerChat (HttpSession session, Model model) {
+
+        if (!sessionService.hasRole(session, Role.SERVICE_PROVIDER)) {
+            return "redirect:/auth/login";
+        }
+
         Integer userId = sessionService.getUserId(session);
         List<RepairRequest> acceptedRequests = repairRequestRepository.findAcceptedRequestsByProviderId(userId);
         model.addAttribute("list", acceptedRequests);
@@ -106,6 +122,11 @@ public class ProviderController {
     @GetMapping("/provider/history")
     public String getHistoryRequests(HttpSession session,
                                      Model model) {
+
+        if (!sessionService.hasRole(session, Role.SERVICE_PROVIDER)) {
+            return "redirect:/auth/login";
+        }
+
         Integer userId = sessionService.getUserId(session);
         List<RepairRequest> requests = repairRequestRepository.findCompletedRequestsByProviderId(userId);
 
@@ -115,6 +136,11 @@ public class ProviderController {
 
     @GetMapping("/admin-chat")
     public String getAdminMessages(HttpSession session, Model model) {
+
+        if (!sessionService.hasRole(session, Role.SERVICE_PROVIDER)) {
+            return "redirect:/auth/login";
+        }
+
         Integer userId = sessionService.getUserId(session);
         List<AdminMessage> messages = adminMessageService.getMessages(userId);
         User admin = userRepository.findFirstByRole(Role.ADMIN);
@@ -130,6 +156,11 @@ public class ProviderController {
     @PostMapping("/admin-chat/send")
     public String sendAdminMessage(@RequestParam String message,
                                    HttpSession session) {
+
+        if (!sessionService.hasRole(session, Role.SERVICE_PROVIDER)) {
+            return "redirect:/auth/login";
+        }
+
         Integer userId = sessionService.getUserId(session);
         adminMessageService.sendMessage(userId, userId, message);
         return "redirect:/provider/admin-chat";
@@ -137,6 +168,11 @@ public class ProviderController {
 
     @GetMapping("/admin-chat/messages")
     public String getAdminChatFragment(HttpSession session, Model model) {
+
+        if (!sessionService.hasRole(session, Role.SERVICE_PROVIDER)) {
+            return "redirect:/auth/login";
+        }
+
         Integer userId = sessionService.getUserId(session);
         List<AdminMessage> messages = adminMessageService.getMessages(userId);
 
@@ -144,5 +180,36 @@ public class ProviderController {
         model.addAttribute("userId", userId);
 
         return "provider/admin-chat-fragment";
+    }
+
+    @GetMapping("/setup-shop")
+    public String showSetupShop(HttpSession session) {
+        if (!sessionService.hasRole(session, Role.SERVICE_PROVIDER)) {
+            return "redirect:/auth/login";
+        }
+        return "provider/setup-shop";
+    }
+
+    @PostMapping("/setup-shop")
+    public String setupShop(@RequestParam String shopName,
+                            @RequestParam String description,
+                            HttpSession session,
+                            Model model) {
+
+        if (!sessionService.hasRole(session, Role.SERVICE_PROVIDER)) {
+            return "redirect:/auth/login";
+        }
+
+        try {
+            Integer userId = sessionService.getUserId(session);
+            CreateShopDTO dto = new CreateShopDTO();
+            dto.setShopName(shopName);
+            dto.setDescription(description);
+            repairShopService.createShop(userId, dto);
+            return "redirect:/provider/dashboard";
+        } catch (RuntimeException e) {
+            model.addAttribute("error", e.getMessage());
+            return "provider/setup-shop";
+        }
     }
 }

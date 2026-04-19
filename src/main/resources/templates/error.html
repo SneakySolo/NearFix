@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Error - NearFix</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f6f8; color: #333; }
+        .container {
+            max-width: 500px;
+            margin: 100px auto;
+            text-align: center;
+            padding: 0 1rem;
+        }
+        .error-code {
+            font-size: 5rem;
+            font-weight: 700;
+            color: #e5e7eb;
+            line-height: 1;
+            margin-bottom: 1rem;
+        }
+        h2 { color: #1a1a2e; margin-bottom: 0.75rem; }
+        p { color: #6b7280; font-size: 0.95rem; margin-bottom: 2rem; }
+        .btn {
+            display: inline-block;
+            padding: 0.7rem 1.5rem;
+            background: #4f46e5;
+            color: white;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+        .btn:hover { background: #4338ca; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="error-code">!</div>
+    <h2>Something went wrong</h2>
+    <p>An unexpected error occurred. Please go back and try again.</p>
+    <a href="javascript:history.back()" class="btn">← Go Back</a>
+</div>
+</body>
+</html>

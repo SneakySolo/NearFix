@@ -6,7 +6,6 @@ import com.SneakySolo.nearfix.domain.user.User;
 import com.SneakySolo.nearfix.dto.CreateRequestDTO;
 import com.SneakySolo.nearfix.entity.AdminMessage;
 import com.SneakySolo.nearfix.entity.RepairRequest;
-import com.SneakySolo.nearfix.repository.AdminMessageRepository;
 import com.SneakySolo.nearfix.repository.UserRepository;
 import com.SneakySolo.nearfix.service.*;
 import jakarta.servlet.http.HttpSession;
@@ -52,6 +51,9 @@ public class CustomerController {
                                  @RequestParam String description,
                                  @RequestParam (required = false) List<MultipartFile> mediaFiles,
                                  HttpSession session, Model model) {
+        if (!sessionService.hasRole(session, Role.CUSTOMER)) {
+            return "redirect:/auth/login";
+        }
 
         try {
             CreateRequestDTO createRequestDTO = new CreateRequestDTO();
@@ -70,7 +72,14 @@ public class CustomerController {
     }
 
     @GetMapping("/request/{requestId}")
-    public String getRequestById (@PathVariable Integer requestId, Model model) {
+    public String getRequestById (@PathVariable Integer requestId,
+                                  HttpSession session,
+                                  Model model) {
+
+        if (!sessionService.hasRole(session, Role.CUSTOMER)) {
+            return "redirect:/auth/login";
+        }
+
         RepairRequest request = repairRequestService.getRequestById(requestId);
         List<Bid> bid = bidService.getBidsForRequest(requestId);
 
@@ -92,6 +101,10 @@ public class CustomerController {
                              @PathVariable Integer bidId,
                              HttpSession session) {
 
+        if (!sessionService.hasRole(session, Role.CUSTOMER)) {
+            return "redirect:/auth/login";
+        }
+
         try {
             Integer userId = sessionService.getUserId(session);
             bidService.acceptBid(bidId, userId);
@@ -106,6 +119,11 @@ public class CustomerController {
     @PostMapping("/request/{requestId}/done")
     public String markAsDone(@PathVariable Integer requestId,
                              HttpSession session) {
+
+        if (!sessionService.hasRole(session, Role.CUSTOMER)) {
+            return "redirect:/auth/login";
+        }
+
         try {
             Integer userId = sessionService.getUserId(session);
             bidService.markAsDone(requestId, userId);
@@ -118,6 +136,11 @@ public class CustomerController {
 
     @GetMapping("/admin-chat")
     public String getAdminMessages (HttpSession session, Model model) {
+
+        if (!sessionService.hasRole(session, Role.CUSTOMER)) {
+            return "redirect:/auth/login";
+        }
+
         Integer userId = sessionService.getUserId(session);
         List<AdminMessage> messages = adminMessageService.getMessages(userId);
         User admin = userRepository.findFirstByRole(Role.ADMIN);
@@ -133,6 +156,11 @@ public class CustomerController {
     @PostMapping("/admin-chat/send")
     public String sendMessages (@RequestParam String message,
                                 HttpSession session) {
+
+        if (!sessionService.hasRole(session, Role.CUSTOMER)) {
+            return "redirect:/auth/login";
+        }
+
         Integer userId = sessionService.getUserId(session);
         adminMessageService.sendMessage(userId, userId, message);
         return "redirect:/customer/admin-chat";
@@ -140,6 +168,11 @@ public class CustomerController {
 
     @GetMapping("/admin-chat/messages")
     public String getAdminChatFragment(HttpSession session, Model model) {
+
+        if (!sessionService.hasRole(session, Role.CUSTOMER)) {
+            return "redirect:/auth/login";
+        }
+
         Integer userId = sessionService.getUserId(session);
         List<AdminMessage> messages = adminMessageService.getMessages(userId);
 
