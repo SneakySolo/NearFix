@@ -246,4 +246,4 @@ Admin chat uses a separate AdminMessage entity so it is not tied to any specific
 ## Author
 
 **Kumar Aditya**
-[LinkedIn]([https://linkedin.com/in/yourprofile](https://www.linkedin.com/in/kumar-aditya-567403278/))
+[LinkedIn](https://www.linkedin.com/in/kumar-aditya-567403278/)
