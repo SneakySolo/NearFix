@@ -219,10 +219,10 @@ Admin chat uses a separate AdminMessage entity so it is not tied to any specific
 
 ## Screenshots
 
-![image alt] (https://github.com/SneakySolo/NearFix/blob/9fe3c20404c2bd413f5921aabeb664d7893d656d/1.PNG) 
-![image alt] (https://github.com/SneakySolo/NearFix/blob/9fe3c20404c2bd413f5921aabeb664d7893d656d/2.PNG)
-![image alt] (https://github.com/SneakySolo/NearFix/blob/9fe3c20404c2bd413f5921aabeb664d7893d656d/3.PNG)
-![image alt] (https://github.com/SneakySolo/NearFix/blob/9fe3c20404c2bd413f5921aabeb664d7893d656d/4.PNG)
+![image alt](https://github.com/SneakySolo/NearFix/blob/9fe3c20404c2bd413f5921aabeb664d7893d656d/1.PNG) 
+![image alt](https://github.com/SneakySolo/NearFix/blob/9fe3c20404c2bd413f5921aabeb664d7893d656d/2.PNG)
+![image alt](https://github.com/SneakySolo/NearFix/blob/9fe3c20404c2bd413f5921aabeb664d7893d656d/3.PNG)
+![image alt](https://github.com/SneakySolo/NearFix/blob/9fe3c20404c2bd413f5921aabeb664d7893d656d/4.PNG)
 
 ---
 
