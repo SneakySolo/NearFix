@@ -43,6 +43,12 @@ Built as a student CV project using Spring Boot, Thymeleaf, and PostgreSQL.
 
 ---
 
+## Screenshot
+
+![image alt](https://github.com/SneakySolo/NearFix/blob/9fe3c20404c2bd413f5921aabeb664d7893d656d/1.PNG) 
+
+---
+
 ## Tech Stack
 
 | Layer | Technology |
@@ -117,8 +123,6 @@ src/main/java/com/SneakySolo/nearfix/
     ├── LocationService.java
     └── SchedulerService.java
 ```
-
----
 
 ## Getting Started
 
@@ -214,12 +218,6 @@ Nobody accepts within 12 hours   →   DESTROYED   (via @Scheduled task)
 Chat between customer and provider is tied to a RepairRequest. Messages are stored in the database and the page polls for new messages every 3 seconds using a JavaScript fetch call to a fragment endpoint — no WebSockets needed.
 
 Admin chat uses a separate AdminMessage entity so it is not tied to any specific request.
-
----
-
-## Screenshot
-
-![image alt](https://github.com/SneakySolo/NearFix/blob/9fe3c20404c2bd413f5921aabeb664d7893d656d/1.PNG) 
 
 ---
 
