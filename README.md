@@ -53,7 +53,7 @@ Built as a student CV project using Spring Boot, Thymeleaf, and PostgreSQL.
 
 | Layer | Technology |
 |---|---|
-| Backend | Java 17, Spring Boot 3.x |
+| Backend | Java 17, Spring Boot 3 |
 | Frontend | Thymeleaf, HTML, CSS |
 | Database | PostgreSQL |
 | ORM | Spring Data JPA / Hibernate |
