@@ -1,5 +1,5 @@
 # NearFix
-
+ 
 A location-based repair service platform where customers can post device repair requests, receive bids from local service providers, and manage the entire repair process — from bidding to chat to reviews.
 
 Built as a student CV project using Spring Boot, Thymeleaf, and PostgreSQL.
