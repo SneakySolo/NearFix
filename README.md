@@ -7,7 +7,7 @@ Built as a student CV project using Spring Boot, Thymeleaf, and PostgreSQL.
 ----
  
 ## Features
-
+ 
 **For Customers**
 - Register and log in as a customer
 - Post repair requests with title, description, and media attachments (photos/videos)
