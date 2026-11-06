@@ -6,7 +6,7 @@ Built as a student CV project using Spring Boot, Thymeleaf, and PostgreSQL.
 
 ---
  
-## Features
+## Features 
  
 **For Customers**
 - Register and log in as a customer
